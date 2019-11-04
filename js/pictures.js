@@ -16,11 +16,12 @@ var DATA_PICTURE = {
         'Как можно было поймать такой неудачный момент?!'
     ],
     DESCRIPTIONS: ['Тестим новую камеру!',
-    'Затусили с друзьями на море',
-    'Как же круто тут кормят',
-    'Отдыхаем...',
-    'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
-    'Вот это тачка!']
+        'Затусили с друзьями на море',
+        'Как же круто тут кормят',
+        'Отдыхаем...',
+        'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
+        'Вот это тачка!'
+    ]
 };
 
 // функция случайного числа в диапозоне
@@ -59,11 +60,11 @@ var pictureTemplate = document.querySelector('#picture-template').content.queryS
 var picturesContainer = document.querySelector('.pictures');
 
 var renderPicture = function (arr) {
-        var element = pictureTemplate.cloneNode(true);
-    
-        element.querySelector('img').src = arr.url;
+    var element = pictureTemplate.cloneNode(true);
 
-        return element;
+    element.querySelector('img').src = arr.url;
+
+    return element;
 };
 
 var fragment = document.createDocumentFragment();
@@ -74,9 +75,6 @@ for (var i = 0; i < pictures.length; i++) {
 
 picturesContainer.appendChild(fragment);
 
-// удаление хидена большой картинки
-
-document.querySelector('.gallery-overlay').classList.remove('hidden');
 
 // заполнение большой картиинки первым элементом массива
 
@@ -85,19 +83,98 @@ var BigPictureRender = function (arr) {
     fragment.querySelector('.gallery-overlay-image').src = arr.url;
     fragment.querySelector('.likes-count').textContent = arr.likes;
     fragment.querySelector('.gallery-overlay-controls-comments').textContent = arr.comments;
-    
+
 };
 
 BigPictureRender(pictures[0]);
 
+// вызов поля редактирования изображения при его загрузке
+
+var uploadOverlay = document.querySelector('.upload-overlay');
+var uploadFileLabel = document.querySelector('.upload-file');
+var uploadFileInput = document.querySelector('#upload-file');
+var uploadOverlayClose = document.querySelector('#upload-cancel');
+
+uploadFileLabel.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 13) {
+        uploadFileInput.focus;
+    }
+});
+
+uploadFileInput.addEventListener('change', function () {
+    uploadOverlay.classList.remove('hidden');
+});
+
+uploadOverlayClose.addEventListener('click', function () {
+    uploadOverlay.classList.add('hidden');
+    uploadFileInput.value = ' ';
+});
+
+// оживление ползунка при заргузке фото
+
+var uploadEffectPin = document.querySelector('.upload-effect-level-pin');
+var uploadEffectLine = document.querySelector('.upload-effect-level-line');
+var uploadEffectActiveLine = document.querySelector('.upload-effect-level-val');
+
+uploadEffectPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoord = evt.clientX;
+
+    var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+        var maxValue = uploadEffectLine.offsetWidth;
+
+        var shift = startCoord - moveEvt.clientX;
+
+        startCoord = moveEvt.clientX;
+
+        var PinPercentPos = (uploadEffectPin.offsetLeft - shift) / maxValue * 100;
+
+        if (uploadEffectPin.offsetLeft - shift < 0) {
+            document.removeEventListener('mousemove', onMouseMove);
+        } else if (uploadEffectPin.offsetLeft - shift >= maxValue) {
+            document.removeEventListener('mousemove', onMouseMove);
+        };
+
+        uploadEffectActiveLine.style.width = PinPercentPos + '%';
+        uploadEffectPin.style.left = (uploadEffectPin.offsetLeft - shift) + 'px';
+    };
+
+    var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+});
+
+// редактирование масштаба при загрузке изображения
+
+var resizeMinus = document.querySelector('button.upload-resize-control:nth-child(1)');
+var resizePlus = document.querySelector('button.upload-resize-control:nth-child(3)');
+var resizeCounter = document.querySelector('input.upload-resize-control');
+var image = document.querySelector('.effect-image-preview');
+
+var MAX_COUNTER_VALUE = 100;
+var MIN_COUNTER_VALUE = 25;
+var STEP_COUNTER_VALUE = 25;
 
 
+resizeMinus.addEventListener('mousedown', function () {
+    if (parseInt(resizeCounter.value) > 25) {
+    resizeCounter.value = (parseInt(resizeCounter.value) - STEP_COUNTER_VALUE) + '%';
+    image.style.transform = `scale(${parseInt(resizeCounter.value) / 100})`;
+    };
+});
 
-
-
-
-
-
-
-
-
+resizePlus.addEventListener('mousedown', function () {
+    if (parseInt(resizeCounter.value) < 100) {
+    resizeCounter.value = (parseInt(resizeCounter.value) + STEP_COUNTER_VALUE) + '%';
+    image.style.transform = `scale(${parseInt(resizeCounter.value) / 100})`;
+    };
+});
