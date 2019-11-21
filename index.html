@@ -25,7 +25,7 @@
 </form>
 
 <form class="upload-form" id="upload-select-image" method="post"
-      enctype="multipart/form-data"
+      enctype="multipart/form-data" action="https://js.dump.academy/kekstagram"
       autocomplete="off">
   <div class="upload-image">
     <input type="file" id="upload-file" class="upload-input" name="filename" required >
@@ -95,9 +95,9 @@
           </label>
         </fieldset>
 
-        <input class="upload-form-hashtags" name="hashtags" placeholder="#хэш-тег">
+        <input class="upload-form-hashtags" name="hashtags" placeholder="#хэш-тег" pattern="">
 
-        <textarea class="upload-form-description" name="description" placeholder="Ваш комментарий..."></textarea>
+        <textarea class="upload-form-description" name="description" type="text" minlength="2" maxlength="140" placeholder="Ваш комментарий..."></textarea>
 
         <button class="upload-form-cancel" type="reset" id="upload-cancel"></button>
         <button class="upload-form-submit" type="submit" id="upload-submit">Отправить</button>
@@ -148,15 +148,22 @@
 </div>
 
 <template id="picture-template" style="display: none">
-  <a href="" class="picture">
+  <div href="" class="picture">
     <img src="" width="182" height="182">
     <span class="picture-stats">
       <span class="picture-stat picture-comments"></span>
       <span class="picture-stat picture-likes"></span>
     </span>
-  </a>
+  </div>
 </template>
 
+<script src="js/backend.js" ></script>
 <script src="js/pictures.js" ></script>
+<script src="js/preview.js" ></script>
+<script src="js/initialize-scale.js" ></script>
+<script src="js/initialize-filters.js" ></script>
+<script src="js/form.js" ></script>
+<script src="js/filters.js"></script>
+
 </body>
 </html>
